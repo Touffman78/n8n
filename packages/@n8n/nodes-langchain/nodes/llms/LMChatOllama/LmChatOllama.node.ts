@@ -10,6 +10,7 @@ import {
 	type SupplyData,
 } from 'n8n-workflow';
 
+import { getHttpProxyAgent } from '@utils/httpProxyAgent';
 import { getConnectionHintNoticeField } from '@utils/sharedFields';
 
 import { ollamaModel, ollamaOptions, ollamaDescription } from '../LMOllama/description';
@@ -67,7 +68,11 @@ export class LmChatOllama implements INodeType {
 			model: modelName,
 			format: options.format === 'default' ? undefined : options.format,
 			callbacks: [new N8nLlmTracing(this)],
+			clientOptions: {
+				httpAgent: getHttpProxyAgent(),
+			},
 			onFailedAttempt: makeN8nLlmFailedAttemptHandler(this),
+
 		});
 
 		return {
